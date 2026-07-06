@@ -32,7 +32,7 @@ namespace RealTimeKafkaSignalR.Api.Services
         public void Dispose()
         {
             _producer.Flush(TimeSpan.FromSeconds(5));
-            _producer.Dispose();
+            _producer.Dispose()
         }
     }
 }

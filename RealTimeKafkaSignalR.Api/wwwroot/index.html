@@ -1,0 +1,60 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <title>Kafka + SignalR Demo</title>
+</head>
+<body>
+    <h2>Kafka + SignalR Real-Time Order Demo</h2>
+
+    <input id="customerName" placeholder="Enter customer name" />
+    <button onclick="createOrder()">Create Order</button>
+
+    <h3>Live Events</h3>
+    <ul id="events"></ul>
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/microsoft-signalr/8.0.7/signalr.min.js"></script>
+
+    <script>
+        const connection = new signalR.HubConnectionBuilder()
+            .withUrl("/hubs/orders")
+            .withAutomaticReconnect()
+            .build();
+
+        connection.on("OrderStatusChanged", function (order) {
+            const li = document.createElement("li");
+
+            li.innerText =
+                "OrderId: " + order.orderId +
+                " | Customer: " + order.customerName +
+                " | Status: " + order.status +
+                " | Time: " + order.createdAt;
+
+            document.getElementById("events").appendChild(li);
+        });
+
+        connection.start()
+            .then(() => console.log("Connected to SignalR"))
+            .catch(err => console.error(err));
+
+        async function createOrder() {
+            const customerName = document.getElementById("customerName").value;
+
+            const response = await fetch("/api/orders", {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    customerName: customerName
+                })
+            });
+
+            if (!response.ok) {
+                alert("Failed to create order");
+            }
+
+            document.getElementById("customerName").value = "";
+        }
+    </script>
+</body>
+</html>

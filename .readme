@@ -1,0 +1,14 @@
+# RealTimeKafkaSignalR
+
+Learning project for .NET Core, Kafka, and SignalR.
+
+## Flow
+
+UI -> .NET API -> Kafka topic -> Kafka consumer background service -> SignalR -> UI
+
+## Local run
+
+1. Start Kafka
+
+```bash
+docker compose up -d

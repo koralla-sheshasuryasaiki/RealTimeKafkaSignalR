@@ -8,8 +8,16 @@ var builder = WebApplication.CreateBuilder(args);
 builder.Services.AddOpenApi();
 
 builder.Services.AddControllers();
-builder.Services.AddSingleton<KafkaProducerService>();
-builder.Services.AddHostedService<KafkaConsumerBackgroundService>();
+//builder.Services.AddSingleton<KafkaProducerService>();
+//builder.Services.AddHostedService<KafkaConsumerBackgroundService>();
+
+var kafkaEnabled = builder.Configuration.GetValue<bool>("Kafka:Enabled");
+
+if (kafkaEnabled)
+{
+    builder.Services.AddSingleton<KafkaProducerService>();
+    builder.Services.AddHostedService<KafkaConsumerBackgroundService>();
+}
 
 builder.Services.AddSignalR();
 

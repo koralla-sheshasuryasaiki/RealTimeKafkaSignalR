@@ -1,0 +1,31 @@
+name: dotnet-ci
+
+on:
+  push:
+    branches:
+      - main
+  pull_request:
+    branches:
+      - main
+
+jobs:
+  build:
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout source
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+
+      - name: Restore
+        run: dotnet restore RealTimeKafkaSignalR.Api/RealTimeKafkaSignalR.Api.csproj
+
+      - name: Build
+        run: dotnet build RealTimeKafkaSignalR.Api/RealTimeKafkaSignalR.Api.csproj --configuration Release --no-restore
+
+      - name: Publish
+        run: dotnet publish RealTimeKafkaSignalR.Api/RealTimeKafkaSignalR.Api.csproj --configuration Release --output ./publish
